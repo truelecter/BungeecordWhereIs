@@ -5,16 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.plugin.PluginManager;
 
 public class BungeeWhereIs
   extends Plugin
@@ -30,7 +27,7 @@ public class BungeeWhereIs
     }
     catch (FileNotFoundException e)
     {
-      getLogger().log(Level.INFO, "prop.properties doesnt exist!");
+      getLogger().log(Level.INFO, "whereIs.properties doesnt exist!");
     }
     catch (Exception e1)
     {
@@ -53,7 +50,8 @@ public class BungeeWhereIs
     return readprop(sn, sn);
   }
   
-  private void commandListener(CommandSender sender, String[] args)
+  @SuppressWarnings("deprecation")
+private void commandListener(CommandSender sender, String[] args)
   {
     if (args.length == 0) {
       sender.sendMessage(ChatColor.GOLD + "Использование: /f <имена игроков>");
@@ -63,7 +61,6 @@ public class BungeeWhereIs
         ProxiedPlayer p1 = getProxy().getPlayer(args[i]);
         if (p1 != null)
         {
-          String s = p1.getServer().getInfo().getName().toString();
           sender.sendMessage(ChatColor.GOLD + args[i] + ChatColor.GREEN + " онлайн" + ChatColor.RESET + " " + readprop("bungeeWhereIs_separator", "на") + " " + ChatColor.BLUE + serverName(p1.getServer().getInfo().getName().toString()));
         }
         else
@@ -86,6 +83,7 @@ public class BungeeWhereIs
     }
   }
   
+  @SuppressWarnings("deprecation")
   public void onEnable()
   {
     ProxyServer.getInstance().getPluginManager().registerCommand(this, new Command("whereis")
@@ -122,12 +120,11 @@ public class BungeeWhereIs
     });
     ProxyServer.getInstance().getPluginManager().registerCommand(this, new Command("cns", "whereis.admin", new String[0])
     {
-      public void execute(CommandSender sender, String[] args)
+	public void execute(CommandSender sender, String[] args)
       {
         if (args.length == 1) {
           BungeeWhereIs.this.setprop("bungeeWhereIs_separator", args[0]);
         } else {
-	//commit change
           sender.sendMessage("А надо так: /cns <separator>");
         }
       }
